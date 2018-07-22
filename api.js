@@ -52,38 +52,21 @@ api.get('/:id', (req, res) => {
     db.get("SELECT id, name, number FROM phone_book WHERE id=(?)", id, function(err, row){
         
         res.json({ "name" : row.name, "number" : row.number, "id" : row.id, "maxid" : x });
-        
     });
-  
-         }
-
+        }
     else {  res.send("errorbre");}
-
-
 })
 
 
 
 api.get('/', function (req, res) {
-
-   
-
     const id = req.params['id'];
 
     db.all("SELECT * FROM phone_book",id, function(err, rows) {
-       
-       
-        // res.json({ "name" : row.name, "number" : row.number, "id" : row.id, "maxid" : x });
-        
-           
-       
-        console.log(rows);
-        res.json({rows});
-           
+    // res.json({ "name" : row.name, "number" : row.number, "id" : row.id, "maxid" : x });
+    console.log(rows);
+    res.json({rows});
     });
-
-   
-   
     // res.send('about')
   })
 
@@ -93,17 +76,11 @@ api.get('/', function (req, res) {
 // let y=x+1;
 // api.post('/:y', function(req, res){
     
- 
 //     db.run("INSERT INTO phone_book (name, number) VALUES (?, ?)", "Ooooooo", "+38160000000");
-    
 //     db.each('SELECT rowid AS md, name, max(id) AS id FROM phone_book', function (err, row) {
 //         console.log(row.id + ': ' + row.name)
 //         x=row.id;
-    
 //       })
-
-     
-
 //     });
 
 api.delete('/:id', function (req, res) {
@@ -115,21 +92,16 @@ api.delete('/:id', function (req, res) {
         else{
             console.log("Successful");
         }
-   
-      }) 
-      db.each('SELECT rowid AS md, name, max(id) AS id FROM phone_book', function (err, row) {
+        }) 
+    db.each('SELECT rowid AS md, name, max(id) AS id FROM phone_book', function (err, row) {
         console.log(row.id + ': ' + row.name)
         x=row.id;
-    
-      })
+        })
       res.send("deleted");
     })    
-  
 // api.get('/random', function (req, res) {
 //     res.send('random.text')
 //   })
-
-
 
 api.get('/getnumber/:name', (req, res, next) => {
     const name = req.params['name'];
@@ -137,33 +109,20 @@ api.get('/getnumber/:name', (req, res, next) => {
     //     var err=new Error('user not found');
     //     next(err);
     // }
- 
-
-
+    
     db.each('SELECT rowid AS md, name, max(id) AS id FROM phone_book', function (err, row) {
         console.log(row.id + ': ' + row.name)
         x=row.id;
     
       })
 
-
     db.get("SELECT id, name, number FROM phone_book WHERE name=(?)", name, function(err, row){
        
         res.json({ "name" : row.name, "number" : row.number, "id" : row.id, "maxid" : x });
-        
-
-        
     });
-
-        
-
-  })
+})
 
 
-
-
-
-  
 api.post('/add', urlencodedParser, function(req, res){
     if (!req.body) return res.sendStatus(400)
     console.log("opa", req.body)
@@ -183,10 +142,10 @@ api.post('/add', urlencodedParser, function(req, res){
     });
 
 
-    api.get('*', function(req, res, next) {
-        let err = new Error('Page Not Found');
-        err.statusCode = 404;
-        next(err);
+api.get('*', function(req, res, next) {
+    let err = new Error('Page Not Found');
+    err.statusCode = 404;
+     next(err);
       });
 
       
