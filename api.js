@@ -11,11 +11,11 @@ db.serialize(function() {
 
 
 let x;
-// db.each('SELECT rowid AS md, name, max(id) AS id FROM phone_book', function (err, row) {
-//     console.log(row.id + ': ' + row.name)
-//     x=row.id;
+db.each('SELECT rowid AS md, name, max(id) AS id FROM phone_book', function (err, row) {
+    console.log(row.id + ': ' + row.name)
+    x=row.id;
 
-//   })
+  })
 
   
 // define api object
@@ -35,32 +35,51 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 //define API endpoints
 api.get('/:id', (req, res) => {
     const id = req.params['id'];
+    console.log(typeof id);
+    var a = parseInt(id);
+    console.log(typeof a);
+    console.log(a);
+    
 
     db.each('SELECT rowid AS md, name, max(id) AS id FROM phone_book', function (err, row) {
         console.log(row.id + ': ' + row.name)
         x=row.id;
-    
+        console.log(typeof x);
       })
-
+      console.log(x);
+      if(a<=x) {
 
     db.get("SELECT id, name, number FROM phone_book WHERE id=(?)", id, function(err, row){
         
         res.json({ "name" : row.name, "number" : row.number, "id" : row.id, "maxid" : x });
         
     });
+  
+         }
 
-  })
+    else {  res.send("errorbre");}
+
+
+})
 
 
 
 api.get('/', function (req, res) {
+
+   
+
     const id = req.params['id'];
 
     db.all("SELECT * FROM phone_book",id, function(err, rows) {
-
+       
+       
         // res.json({ "name" : row.name, "number" : row.number, "id" : row.id, "maxid" : x });
+        
+           
+       
         console.log(rows);
         res.json({rows});
+           
     });
 
    
@@ -103,14 +122,23 @@ api.delete('/:id', function (req, res) {
         x=row.id;
     
       })
+      res.send("deleted");
     })    
   
 // api.get('/random', function (req, res) {
 //     res.send('random.text')
 //   })
 
-api.get('/getnumber/:name', (req, res) => {
+
+
+api.get('/getnumber/:name', (req, res, next) => {
     const name = req.params['name'];
+    // if(name==='Leee') {
+    //     var err=new Error('user not found');
+    //     next(err);
+    // }
+ 
+
 
     db.each('SELECT rowid AS md, name, max(id) AS id FROM phone_book', function (err, row) {
         console.log(row.id + ': ' + row.name)
@@ -120,12 +148,17 @@ api.get('/getnumber/:name', (req, res) => {
 
 
     db.get("SELECT id, name, number FROM phone_book WHERE name=(?)", name, function(err, row){
-        
+       
         res.json({ "name" : row.name, "number" : row.number, "id" : row.id, "maxid" : x });
+        
+
         
     });
 
+        
+
   })
+
 
 
 
@@ -145,12 +178,17 @@ api.post('/add', urlencodedParser, function(req, res){
     
       })
 
-     
+      res.send("added"); 
 
     });
 
 
+    api.get('*', function(req, res, next) {
+        let err = new Error('Page Not Found');
+        err.statusCode = 404;
+        next(err);
+      });
 
-
+      
 
 api.listen(3000, () => console.log('Example app listening on port 3000!'))
